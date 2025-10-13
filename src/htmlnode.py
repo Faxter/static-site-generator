@@ -1,7 +1,6 @@
-from typing import final, override, Self
+from typing import override, Self
 
 
-@final
 class HTMLNode:
     @override
     def __init__(
@@ -11,10 +10,10 @@ class HTMLNode:
         children: list[Self] | None = None,
         props: dict[str, str] | None = None,
     ):
-        self.tag = tag
-        self.value = value
-        self.children = children
-        self.props = props
+        self.tag: str | None = tag
+        self.value: str | None = value
+        self.children: list[Self] | None = children
+        self.props: dict[str, str] | None = props
 
     @override
     def __repr__(self):
