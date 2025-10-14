@@ -14,8 +14,9 @@ class TestLeafNode(unittest.TestCase):
 
     def test_leaf_to_html_empty_value(self):
         node = LeafNode(tag=None, value="")
-        _ = node.to_html()
-        _ = self.assertRaises(ValueError)
+        node.value = None
+        with self.assertRaises(ValueError):
+            _ = node.to_html()
 
     def test_leaf_node_to_html_a_with_props(self):
         node = LeafNode(
