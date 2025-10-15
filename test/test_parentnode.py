@@ -31,6 +31,10 @@ class TestParentNode(unittest.TestCase):
             "<p><b>Bold text</b>Normal text<i>Italic text</i>Normal text</p>",
         )
 
+    def test_parent_to_html_without_children(self):
+        parent_node = ParentNode("p", [])
+        self.assertEqual(parent_node.to_html(), "<p></p>")
+
     def test_parent_to_html_with_grandchildren(self):
         grandchild_node = LeafNode(tag="b", value="grandchild")
         child_node = ParentNode("span", [grandchild_node])
@@ -38,4 +42,32 @@ class TestParentNode(unittest.TestCase):
         self.assertEqual(
             parent_node.to_html(),
             "<div><span><b>grandchild</b></span></div>",
+        )
+
+    def test_parent_node_to_html_with_props_in_child(self):
+        parent_node = ParentNode(
+            "p",
+            [
+                LeafNode(
+                    tag="a", value="LinkText", props={"href": "https://faxxter.com"}
+                )
+            ],
+        )
+        self.assertEqual(
+            parent_node.to_html(), '<p><a href="https://faxxter.com">LinkText</a></p>'
+        )
+
+    def test_parent_node_to_html_with_props_in_parent(self):
+        parent_node = ParentNode(
+            "p",
+            [
+                LeafNode(
+                    tag="a", value="LinkText", props={"href": "https://faxxter.com"}
+                )
+            ],
+            {"prop": "interesting"},
+        )
+        self.assertEqual(
+            parent_node.to_html(),
+            '<p prop="interesting"><a href="https://faxxter.com">LinkText</a></p>',
         )
