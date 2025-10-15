@@ -5,7 +5,10 @@ from src.htmlnode import HTMLNode
 @final
 class ParentNode(HTMLNode):
     def __init__(
-        self, tag: str, children: list[HTMLNode], props: dict[str, str] | None = None
+        self,
+        tag: str,
+        children: list[HTMLNode],
+        props: dict[str, str] | None = None,
     ):
         super().__init__(tag=tag, children=children, props=props)
 
