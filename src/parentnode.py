@@ -15,8 +15,7 @@ class ParentNode(HTMLNode):
             raise ValueError("tag of ParentNode must be set")
         if self.children is None:
             raise ValueError("ParentNode must have children")
-        if any(child.value is None for child in self.children):
-            raise ValueError("at least one child is missing its value")
+
         children = ""
         for child in self.children:
             children += child.to_html()
