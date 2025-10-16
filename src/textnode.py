@@ -16,7 +16,7 @@ class TextNode:
     def __init__(self, text: str, text_type: TextType, url: str = ""):
         self.text = text
         self.text_type = text_type
-        self.url = url if len(url) > 0 else None
+        self.url = url
 
     @override
     def __eq__(self, other: object):
