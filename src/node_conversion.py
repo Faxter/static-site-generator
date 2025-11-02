@@ -16,3 +16,17 @@ def text_node_to_html_node(text_node: TextNode):
             return LeafNode(text_node.text, "a", {"href": text_node.url})
         case TextType.IMAGE:
             return LeafNode("", "img", {"alt": text_node.text, "img": text_node.url})
+
+
+def split_text_nodes_by_delimiter(
+    old_nodes: list[TextNode], delimiter: str, text_type: TextType
+):
+    if not delimiter:
+        return old_nodes
+    new_nodes: list[TextNode] = []
+    for node in old_nodes:
+        splits = node.text.split(delimiter)
+        if len(splits) % 2 == 0:
+            raise Exception(f"unmatched delimiter {delimiter} in text {node.text}")
+        new_nodes.append(node)
+    return new_nodes

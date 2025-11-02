@@ -2,7 +2,7 @@ import unittest
 
 from src.textnode import TextType, TextNode
 from src.leafnode import LeafNode
-from src.node_conversion import text_node_to_html_node
+from src.node_conversion import split_text_nodes_by_delimiter, text_node_to_html_node
 
 
 class TestNodeConversion(unittest.TestCase):
@@ -49,3 +49,19 @@ class TestNodeConversion(unittest.TestCase):
             html_node.props,
             {"alt": "image description", "img": "https://faxxter.com/image.png"},
         )
+
+    def test_split_text_without_delimiter(self):
+        node = TextNode("Just some text", TextType.PLAIN)
+        new_nodes = split_text_nodes_by_delimiter([node], "", TextType.PLAIN)
+        self.assertEqual(new_nodes[0].text, "Just some text")
+
+    def test_do_not_split_non_plain_text(self):
+        node = TextNode("Just some bold text", TextType.BOLD)
+        new_nodes = split_text_nodes_by_delimiter([node], "", TextType.PLAIN)
+        self.assertEqual(new_nodes[0].text, "Just some bold text")
+        self.assertEqual(new_nodes[0].text_type, TextType.BOLD)
+
+    def test_split_of_unmatched_delimiter_raises(self):
+        node = TextNode("Just some **bold text", TextType.PLAIN)
+        with self.assertRaises(Exception):
+            _ = split_text_nodes_by_delimiter([node], "**", TextType.BOLD)
