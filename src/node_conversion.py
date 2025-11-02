@@ -32,11 +32,12 @@ def split_text_nodes_by_delimiter(
         if len(splits) % 2 == 0:
             raise Exception(f"unmatched delimiter {delimiter} in text {node.text}")
 
-        new_nodes.append(TextNode(splits[0], TextType.PLAIN))
-        i = 1
-        while i < len(splits):
-            new_nodes.append(TextNode(splits[i], text_type))
-            new_nodes.append(TextNode(splits[i + 1], TextType.PLAIN))
-            i += 2
+        for i in range(len(splits)):
+            if not splits[i]:
+                continue
+            if i % 2 == 0:
+                new_nodes.append(TextNode(splits[i], TextType.PLAIN))
+            else:
+                new_nodes.append(TextNode(splits[i], text_type))
 
-    return list(filter(lambda x: x.text, new_nodes))  # remove empty substrings
+    return new_nodes
