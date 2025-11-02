@@ -69,51 +69,52 @@ class TestNodeConversion(unittest.TestCase):
     def test_split_text_by_delimiter(self):
         node = TextNode("Some **bold** text", TextType.PLAIN)
         new_nodes = split_text_nodes_by_delimiter([node], "**", TextType.BOLD)
-        self.assertEqual(len(new_nodes), 3)
-        self.assertEqual(new_nodes[0].text, "Some ")
-        self.assertEqual(new_nodes[0].text_type, TextType.PLAIN)
-        self.assertEqual(new_nodes[1].text, "bold")
-        self.assertEqual(new_nodes[1].text_type, TextType.BOLD)
-        self.assertEqual(new_nodes[2].text, " text")
-        self.assertEqual(new_nodes[2].text_type, TextType.PLAIN)
+        self.assertListEqual(
+            [
+                TextNode("Some ", TextType.PLAIN),
+                TextNode("bold", TextType.BOLD),
+                TextNode(" text", TextType.PLAIN),
+            ],
+            new_nodes,
+        )
 
     def test_split_text_by_delimiter_without_delimiter_in_text(self):
         node = TextNode("Some not so bold text", TextType.PLAIN)
         new_nodes = split_text_nodes_by_delimiter([node], "**", TextType.BOLD)
-        self.assertEqual(len(new_nodes), 1)
-        self.assertEqual(new_nodes[0].text, "Some not so bold text")
-        self.assertEqual(new_nodes[0].text_type, TextType.PLAIN)
+        self.assertListEqual(
+            [TextNode("Some not so bold text", TextType.PLAIN)], new_nodes
+        )
 
     def test_split_text_by_delimiter_with_delimiter_at_start(self):
         node = TextNode("**bold** text at start", TextType.PLAIN)
         new_nodes = split_text_nodes_by_delimiter([node], "**", TextType.BOLD)
-        self.assertEqual(len(new_nodes), 2)
-        self.assertEqual(new_nodes[0].text, "bold")
-        self.assertEqual(new_nodes[0].text_type, TextType.BOLD)
-        self.assertEqual(new_nodes[1].text, " text at start")
-        self.assertEqual(new_nodes[1].text_type, TextType.PLAIN)
+        self.assertListEqual(
+            [
+                TextNode("bold", TextType.BOLD),
+                TextNode(" text at start", TextType.PLAIN),
+            ],
+            new_nodes,
+        )
 
     def test_split_text_by_delimiter_with_delimiter_at_end(self):
         node = TextNode("text with **bold**", TextType.PLAIN)
         new_nodes = split_text_nodes_by_delimiter([node], "**", TextType.BOLD)
-        self.assertEqual(len(new_nodes), 2)
-        self.assertEqual(new_nodes[0].text, "text with ")
-        self.assertEqual(new_nodes[0].text_type, TextType.PLAIN)
-        self.assertEqual(new_nodes[1].text, "bold")
-        self.assertEqual(new_nodes[1].text_type, TextType.BOLD)
+        self.assertListEqual(
+            [TextNode("text with ", TextType.PLAIN), TextNode("bold", TextType.BOLD)],
+            new_nodes,
+        )
 
     def test_split_text_by_two_delimiters(self):
         node = TextNode("text with **bold** and _italic_ text", TextType.PLAIN)
         bolded_nodes = split_text_nodes_by_delimiter([node], "**", TextType.BOLD)
         new_nodes = split_text_nodes_by_delimiter(bolded_nodes, "_", TextType.ITALIC)
-        self.assertEqual(len(new_nodes), 5)
-        self.assertEqual(new_nodes[0].text, "text with ")
-        self.assertEqual(new_nodes[0].text_type, TextType.PLAIN)
-        self.assertEqual(new_nodes[1].text, "bold")
-        self.assertEqual(new_nodes[1].text_type, TextType.BOLD)
-        self.assertEqual(new_nodes[2].text, " and ")
-        self.assertEqual(new_nodes[2].text_type, TextType.PLAIN)
-        self.assertEqual(new_nodes[3].text, "italic")
-        self.assertEqual(new_nodes[3].text_type, TextType.ITALIC)
-        self.assertEqual(new_nodes[4].text, " text")
-        self.assertEqual(new_nodes[4].text_type, TextType.PLAIN)
+        self.assertListEqual(
+            [
+                TextNode("text with ", TextType.PLAIN),
+                TextNode("bold", TextType.BOLD),
+                TextNode(" and ", TextType.PLAIN),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" text", TextType.PLAIN),
+            ],
+            new_nodes,
+        )
