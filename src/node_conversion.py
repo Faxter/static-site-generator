@@ -25,8 +25,18 @@ def split_text_nodes_by_delimiter(
         return old_nodes
     new_nodes: list[TextNode] = []
     for node in old_nodes:
+        if node.text_type != TextType.PLAIN:
+            new_nodes.append(node)
+            continue
         splits = node.text.split(delimiter)
         if len(splits) % 2 == 0:
             raise Exception(f"unmatched delimiter {delimiter} in text {node.text}")
-        new_nodes.append(node)
-    return new_nodes
+
+        new_nodes.append(TextNode(splits[0], TextType.PLAIN))
+        i = 1
+        while i < len(splits):
+            new_nodes.append(TextNode(splits[i], text_type))
+            new_nodes.append(TextNode(splits[i + 1], TextType.PLAIN))
+            i += 2
+
+    return list(filter(lambda x: x.text, new_nodes))  # remove empty substrings
