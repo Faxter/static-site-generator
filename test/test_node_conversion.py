@@ -307,3 +307,16 @@ class TestNodeConversion(unittest.TestCase):
         node = TextNode("just some text", TextType.PLAIN)
         new_nodes = split_text_nodes_by_links([node])
         self.assertListEqual([node], new_nodes)
+
+    def test_split_text_node_for_links_starting_with_other_typed_nodes(self):
+        node1 = TextNode("IMPORTANT:", TextType.BOLD)
+        node2 = TextNode(" click this [thing](https://faxxter.com)", TextType.PLAIN)
+        new_nodes = split_text_nodes_by_links([node1, node2])
+        self.assertListEqual(
+            [
+                TextNode("IMPORTANT:", TextType.BOLD),
+                TextNode(" click this ", TextType.PLAIN),
+                TextNode("thing", TextType.LINK, "https://faxxter.com"),
+            ],
+            new_nodes,
+        )

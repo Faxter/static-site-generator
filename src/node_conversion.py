@@ -77,6 +77,9 @@ def split_text_nodes_by_type(
     new_nodes: list[TextNode] = []
     for node in old_nodes:
         elements = extract_function(node.text)
+        if not elements:
+            new_nodes.append(node)
+            continue
         search_text = node.text
         for element in elements:
             element_text, element_url = element
