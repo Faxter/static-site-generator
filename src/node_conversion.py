@@ -72,5 +72,18 @@ def split_text_nodes_by_image(old_nodes: list[TextNode]):
     return new_nodes
 
 
-def split_text_nodes_by_link(old_nodes: list[TextNode]):
-    pass
+def split_text_nodes_by_links(old_nodes: list[TextNode]):
+    new_nodes: list[TextNode] = []
+    for node in old_nodes:
+        links = extract_markdown_links(node.text)
+        search_text = node.text
+        for link in links:
+            link_text, link_url = link
+            split_text = search_text.split(f"[{link_text}]({link_url})", 1)
+            search_text = split_text[1]
+            if split_text[0]:
+                new_nodes.append(TextNode(split_text[0], TextType.PLAIN))
+            new_nodes.append(TextNode(link_text, TextType.LINK, link_url))
+        if search_text:
+            new_nodes.append(TextNode(search_text, TextType.PLAIN))
+    return new_nodes

@@ -8,7 +8,7 @@ from src.node_conversion import (
     extract_markdown_images,
     extract_markdown_links,
     split_text_nodes_by_image,
-    split_text_nodes_by_link,
+    split_text_nodes_by_links,
 )
 
 
@@ -235,6 +235,65 @@ class TestNodeConversion(unittest.TestCase):
                 TextNode(
                     "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
                 ),
+            ],
+            new_nodes,
+        )
+
+    def test_split_text_for_links_one_link_at_end(self):
+        node = TextNode(
+            "This is text with a [link](https://faxxter.com)",
+            TextType.PLAIN,
+        )
+        new_nodes = split_text_nodes_by_links([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a ", TextType.PLAIN),
+                TextNode("link", TextType.LINK, "https://faxxter.com"),
+            ],
+            new_nodes,
+        )
+
+    def test_split_text_for_links_one_link_at_start(self):
+        node = TextNode(
+            "[link](https://faxxter.com) at the start",
+            TextType.PLAIN,
+        )
+        new_nodes = split_text_nodes_by_links([node])
+        self.assertListEqual(
+            [
+                TextNode("link", TextType.LINK, "https://faxxter.com"),
+                TextNode(" at the start", TextType.PLAIN),
+            ],
+            new_nodes,
+        )
+
+    def test_split_text_for_links_one_link_in_middle(self):
+        node = TextNode(
+            "A [link](https://faxxter.com) in the middle",
+            TextType.PLAIN,
+        )
+        new_nodes = split_text_nodes_by_links([node])
+        self.assertListEqual(
+            [
+                TextNode("A ", TextType.PLAIN),
+                TextNode("link", TextType.LINK, "https://faxxter.com"),
+                TextNode(" in the middle", TextType.PLAIN),
+            ],
+            new_nodes,
+        )
+
+    def test_split_text_for_links_two_links(self):
+        node = TextNode(
+            "This is text with a [link](https://faxxter.com) and another [second link](https://boot.dev)",
+            TextType.PLAIN,
+        )
+        new_nodes = split_text_nodes_by_links([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a ", TextType.PLAIN),
+                TextNode("link", TextType.LINK, "https://faxxter.com"),
+                TextNode(" and another ", TextType.PLAIN),
+                TextNode("second link", TextType.LINK, "https://boot.dev"),
             ],
             new_nodes,
         )
