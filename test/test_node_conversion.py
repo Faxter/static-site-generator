@@ -7,6 +7,8 @@ from src.node_conversion import (
     text_node_to_html_node,
     extract_markdown_images,
     extract_markdown_links,
+    split_text_nodes_by_image,
+    split_text_nodes_by_link,
 )
 
 
@@ -174,4 +176,65 @@ class TestNodeConversion(unittest.TestCase):
         self.assertListEqual(
             [],
             matches,
+        )
+
+    def test_split_text_for_images_one_image_at_end(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)",
+            TextType.PLAIN,
+        )
+        new_nodes = split_text_nodes_by_image([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.PLAIN),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+            ],
+            new_nodes,
+        )
+
+    def test_split_text_for_images_one_image_at_start(self):
+        node = TextNode(
+            "![image](https://i.imgur.com/zjjcJKZ.png) at the start",
+            TextType.PLAIN,
+        )
+        new_nodes = split_text_nodes_by_image([node])
+        self.assertListEqual(
+            [
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" at the start", TextType.PLAIN),
+            ],
+            new_nodes,
+        )
+
+    def test_split_text_for_images_one_image_in_middle(self):
+        node = TextNode(
+            "An ![image](https://i.imgur.com/zjjcJKZ.png) in the middle",
+            TextType.PLAIN,
+        )
+        new_nodes = split_text_nodes_by_image([node])
+        self.assertListEqual(
+            [
+                TextNode("An ", TextType.PLAIN),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" in the middle", TextType.PLAIN),
+            ],
+            new_nodes,
+        )
+
+    def test_split_text_for_images_two_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            TextType.PLAIN,
+        )
+        new_nodes = split_text_nodes_by_image([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.PLAIN),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.PLAIN),
+                TextNode(
+                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
         )
