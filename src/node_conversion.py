@@ -1,4 +1,5 @@
 import re
+from collections.abc import Callable
 
 from src.textnode import TextType, TextNode
 from src.leafnode import LeafNode
@@ -56,34 +57,35 @@ def extract_markdown_links(text: str):
 
 
 def split_text_nodes_by_image(old_nodes: list[TextNode]):
-    new_nodes: list[TextNode] = []
-    for node in old_nodes:
-        images = extract_markdown_images(node.text)
-        search_text = node.text
-        for image in images:
-            image_alt, image_link = image
-            split_text = search_text.split(f"![{image_alt}]({image_link})", 1)
-            search_text = split_text[1]
-            if split_text[0]:
-                new_nodes.append(TextNode(split_text[0], TextType.PLAIN))
-            new_nodes.append(TextNode(image_alt, TextType.IMAGE, image_link))
-        if search_text:
-            new_nodes.append(TextNode(search_text, TextType.PLAIN))
-    return new_nodes
+    return split_text_nodes_by_type(
+        old_nodes, TextType.IMAGE, extract_markdown_images, "![{0}]({1})"
+    )
 
 
 def split_text_nodes_by_links(old_nodes: list[TextNode]):
+    return split_text_nodes_by_type(
+        old_nodes, TextType.LINK, extract_markdown_links, "[{0}]({1})"
+    )
+
+
+def split_text_nodes_by_type(
+    old_nodes: list[TextNode],
+    type: TextType,
+    extract_function: Callable[[str], list[str]],
+    format_str: str,
+):
     new_nodes: list[TextNode] = []
     for node in old_nodes:
-        links = extract_markdown_links(node.text)
+        elements = extract_function(node.text)
         search_text = node.text
-        for link in links:
-            link_text, link_url = link
-            split_text = search_text.split(f"[{link_text}]({link_url})", 1)
+        for element in elements:
+            element_text, element_url = element
+            split_marker = format_str.format(element_text, element_url)
+            split_text = search_text.split(split_marker, 1)
             search_text = split_text[1]
             if split_text[0]:
                 new_nodes.append(TextNode(split_text[0], TextType.PLAIN))
-            new_nodes.append(TextNode(link_text, TextType.LINK, link_url))
+            new_nodes.append(TextNode(element_text, type, element_url))
         if search_text:
             new_nodes.append(TextNode(search_text, TextType.PLAIN))
     return new_nodes
