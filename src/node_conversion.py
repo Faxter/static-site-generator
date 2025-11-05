@@ -92,3 +92,12 @@ def split_text_nodes_by_type(
         if search_text:
             new_nodes.append(TextNode(search_text, TextType.PLAIN))
     return new_nodes
+
+
+def text_to_textnodes(text: str):
+    node = TextNode(text, TextType.PLAIN)
+    bolded = split_text_nodes_by_delimiter([node], "**", TextType.BOLD)
+    italicized = split_text_nodes_by_delimiter(bolded, "_", TextType.ITALIC)
+    coded = split_text_nodes_by_delimiter(italicized, "`", TextType.CODE)
+    images = split_text_nodes_by_image(coded)
+    return split_text_nodes_by_links(images)
