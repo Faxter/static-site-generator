@@ -106,7 +106,7 @@ def split_text_nodes_by_type(
     return new_nodes
 
 
-def text_to_textnodes(text: str):
+def markdown_text_to_textnodes(text: str):
     node = TextNode(text, TextType.PLAIN)
     bolded = split_text_nodes_by_bold_sections([node])
     italicized = split_text_nodes_by_italic_sections(bolded)

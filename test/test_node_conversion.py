@@ -12,7 +12,7 @@ from src.node_conversion import (
     extract_markdown_links,
     split_text_nodes_by_image,
     split_text_nodes_by_links,
-    text_to_textnodes,
+    markdown_text_to_textnodes,
 )
 
 
@@ -328,7 +328,7 @@ class TestNodeConversion(unittest.TestCase):
         )
 
     def test_text_to_textnodes(self):
-        nodes = text_to_textnodes(
+        nodes = markdown_text_to_textnodes(
             "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
         )
         self.assertListEqual(
