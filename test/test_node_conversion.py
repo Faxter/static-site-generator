@@ -239,6 +239,11 @@ class TestNodeConversion(unittest.TestCase):
             new_nodes,
         )
 
+    def test_split_text_node_for_images_no_image(self):
+        node = TextNode("just some text", TextType.PLAIN)
+        new_nodes = split_text_nodes_by_image([node])
+        self.assertListEqual([node], new_nodes)
+
     def test_split_text_for_links_one_link_at_end(self):
         node = TextNode(
             "This is text with a [link](https://faxxter.com)",
@@ -297,3 +302,8 @@ class TestNodeConversion(unittest.TestCase):
             ],
             new_nodes,
         )
+
+    def test_split_text_node_for_links_no_link(self):
+        node = TextNode("just some text", TextType.PLAIN)
+        new_nodes = split_text_nodes_by_links([node])
+        self.assertListEqual([node], new_nodes)
