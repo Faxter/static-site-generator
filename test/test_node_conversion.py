@@ -3,7 +3,10 @@ import unittest
 from src.textnode import TextType, TextNode
 from src.leafnode import LeafNode
 from src.node_conversion import (
+    split_text_nodes_by_bold_sections,
+    split_text_nodes_by_code_sections,
     split_text_nodes_by_delimiter,
+    split_text_nodes_by_italic_sections,
     text_node_to_html_node,
     extract_markdown_images,
     extract_markdown_links,
@@ -112,17 +115,19 @@ class TestNodeConversion(unittest.TestCase):
             new_nodes,
         )
 
-    def test_split_text_by_two_delimiters(self):
-        node = TextNode("text with **bold** and _italic_ text", TextType.PLAIN)
-        bolded_nodes = split_text_nodes_by_delimiter([node], "**", TextType.BOLD)
-        new_nodes = split_text_nodes_by_delimiter(bolded_nodes, "_", TextType.ITALIC)
+    def test_split_text_by_multiple_delimiters(self):
+        node = TextNode("text with **bold** and _italic_ `text`", TextType.PLAIN)
+        bolded_nodes = split_text_nodes_by_bold_sections([node])
+        italic_nodes = split_text_nodes_by_italic_sections(bolded_nodes)
+        new_nodes = split_text_nodes_by_code_sections(italic_nodes)
         self.assertListEqual(
             [
                 TextNode("text with ", TextType.PLAIN),
                 TextNode("bold", TextType.BOLD),
                 TextNode(" and ", TextType.PLAIN),
                 TextNode("italic", TextType.ITALIC),
-                TextNode(" text", TextType.PLAIN),
+                TextNode(" ", TextType.PLAIN),
+                TextNode("text", TextType.CODE),
             ],
             new_nodes,
         )

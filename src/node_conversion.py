@@ -21,6 +21,18 @@ def text_node_to_html_node(text_node: TextNode):
             return LeafNode("", "img", {"alt": text_node.text, "img": text_node.url})
 
 
+def split_text_nodes_by_bold_sections(old_nodes: list[TextNode]):
+    return split_text_nodes_by_delimiter(old_nodes, "**", TextType.BOLD)
+
+
+def split_text_nodes_by_italic_sections(old_nodes: list[TextNode]):
+    return split_text_nodes_by_delimiter(old_nodes, "_", TextType.ITALIC)
+
+
+def split_text_nodes_by_code_sections(old_nodes: list[TextNode]):
+    return split_text_nodes_by_delimiter(old_nodes, "`", TextType.CODE)
+
+
 def split_text_nodes_by_delimiter(
     old_nodes: list[TextNode], delimiter: str, text_type: TextType
 ):
@@ -96,8 +108,8 @@ def split_text_nodes_by_type(
 
 def text_to_textnodes(text: str):
     node = TextNode(text, TextType.PLAIN)
-    bolded = split_text_nodes_by_delimiter([node], "**", TextType.BOLD)
-    italicized = split_text_nodes_by_delimiter(bolded, "_", TextType.ITALIC)
-    coded = split_text_nodes_by_delimiter(italicized, "`", TextType.CODE)
+    bolded = split_text_nodes_by_bold_sections([node])
+    italicized = split_text_nodes_by_italic_sections(bolded)
+    coded = split_text_nodes_by_code_sections(italicized)
     images = split_text_nodes_by_image(coded)
     return split_text_nodes_by_links(images)
