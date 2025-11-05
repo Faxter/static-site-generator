@@ -21,6 +21,15 @@ def text_node_to_html_node(text_node: TextNode):
             return LeafNode("", "img", {"alt": text_node.text, "img": text_node.url})
 
 
+def markdown_text_to_textnodes(text: str):
+    node = TextNode(text, TextType.PLAIN)
+    bolded = split_text_nodes_by_bold_sections([node])
+    italicized = split_text_nodes_by_italic_sections(bolded)
+    coded = split_text_nodes_by_code_sections(italicized)
+    images = split_text_nodes_by_image(coded)
+    return split_text_nodes_by_links(images)
+
+
 def split_text_nodes_by_bold_sections(old_nodes: list[TextNode]):
     return split_text_nodes_by_delimiter(old_nodes, "**", TextType.BOLD)
 
@@ -46,7 +55,6 @@ def split_text_nodes_by_delimiter(
         splits = node.text.split(delimiter)
         if len(splits) % 2 == 0:
             raise Exception(f"unmatched delimiter {delimiter} in text {node.text}")
-
         for i in range(len(splits)):
             if not splits[i]:
                 continue
@@ -54,18 +62,7 @@ def split_text_nodes_by_delimiter(
                 new_nodes.append(TextNode(splits[i], TextType.PLAIN))
             else:
                 new_nodes.append(TextNode(splits[i], text_type))
-
     return new_nodes
-
-
-def extract_markdown_images(text: str):
-    matcher = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"  # match for ![alt-text](link-to-image)
-    return re.findall(matcher, text)
-
-
-def extract_markdown_links(text: str):
-    matcher = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"  # match for [link-text](link-url)
-    return re.findall(matcher, text)
 
 
 def split_text_nodes_by_image(old_nodes: list[TextNode]):
@@ -78,6 +75,16 @@ def split_text_nodes_by_links(old_nodes: list[TextNode]):
     return split_text_nodes_by_type(
         old_nodes, TextType.LINK, extract_markdown_links, "[{0}]({1})"
     )
+
+
+def extract_markdown_images(text: str):
+    matcher = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"  # match for ![alt-text](link-to-image)
+    return re.findall(matcher, text)
+
+
+def extract_markdown_links(text: str):
+    matcher = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"  # match for [link-text](link-url)
+    return re.findall(matcher, text)
 
 
 def split_text_nodes_by_type(
@@ -104,12 +111,3 @@ def split_text_nodes_by_type(
         if search_text:
             new_nodes.append(TextNode(search_text, TextType.PLAIN))
     return new_nodes
-
-
-def markdown_text_to_textnodes(text: str):
-    node = TextNode(text, TextType.PLAIN)
-    bolded = split_text_nodes_by_bold_sections([node])
-    italicized = split_text_nodes_by_italic_sections(bolded)
-    coded = split_text_nodes_by_code_sections(italicized)
-    images = split_text_nodes_by_image(coded)
-    return split_text_nodes_by_links(images)
