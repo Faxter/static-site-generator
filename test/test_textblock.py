@@ -1,9 +1,40 @@
 import unittest
 
-from src.textblock import BlockType, block_to_block_type
+from src.textblock import BlockType, block_to_block_type, markdown_to_text_blocks
 
 
 class TestTextBlock(unittest.TestCase):
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_text_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+
+    def test_markdown_to_blocks_empty_blocks(self):
+        md = """
+block 1
+
+
+
+block 2
+"""
+        blocks = markdown_to_text_blocks(md)
+        self.assertEqual(["block 1", "block 2"], blocks)
+
     def test_text_block_paragraph(self):
         block = "some text"
         type = block_to_block_type(block)

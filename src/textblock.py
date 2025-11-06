@@ -12,6 +12,11 @@ class BlockType(Enum):
     ORDERED_LIST = "ordered list"
 
 
+def markdown_to_text_blocks(document: str):
+    blocks: list[str] = document.split("\n\n")
+    return list(map(str.strip, filter(None, blocks)))
+
+
 def block_to_block_type(block: str):
     heading_matcher = r"^#{1,6} .*"
     code_matcher = r"^`{3}.*`{3}$"
