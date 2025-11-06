@@ -1,8 +1,13 @@
 import re
 from collections.abc import Callable
 
-from src.textnode import TextType, TextNode
 from src.leafnode import LeafNode
+from src.textnode import TextNode, TextType
+
+
+def markdown_to_text_blocks(document: str):
+    blocks: list[str] = document.split("\n\n")
+    return list(map(str.strip, filter(None, blocks)))
 
 
 def text_node_to_html_node(text_node: TextNode):

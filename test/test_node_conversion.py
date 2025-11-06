@@ -1,19 +1,20 @@
 import unittest
 
-from src.textnode import TextType, TextNode
 from src.leafnode import LeafNode
 from src.node_conversion import (
+    extract_markdown_images,
+    extract_markdown_links,
+    markdown_text_to_textnodes,
+    markdown_to_text_blocks,
     split_text_nodes_by_bold_sections,
     split_text_nodes_by_code_sections,
     split_text_nodes_by_delimiter,
-    split_text_nodes_by_italic_sections,
-    text_node_to_html_node,
-    extract_markdown_images,
-    extract_markdown_links,
     split_text_nodes_by_image,
+    split_text_nodes_by_italic_sections,
     split_text_nodes_by_links,
-    markdown_text_to_textnodes,
+    text_node_to_html_node,
 )
+from src.textnode import TextNode, TextType
 
 
 class TestNodeConversion(unittest.TestCase):
@@ -348,3 +349,34 @@ class TestNodeConversion(unittest.TestCase):
             ],
             nodes,
         )
+
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_text_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+
+    def test_markdown_to_blocks_empty_blocks(self):
+        md = """
+block 1
+
+
+
+block 2
+"""
+        blocks = markdown_to_text_blocks(md)
+        self.assertEqual(["block 1", "block 2"], blocks)
