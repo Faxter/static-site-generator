@@ -156,3 +156,7 @@ block 2
     def test_block_to_line_heading(self):
         line = heading_block_to_line("# heading 1")
         self.assertEqual("heading 1", line[1])
+
+    def test_block_to_line_heading_match_error(self):
+        with self.assertRaises(ValueError):
+            heading_block_to_line("heading")

@@ -1,13 +1,19 @@
 import unittest
 
-from src.parentnode import ParentNode
 from src.leafnode import LeafNode
+from src.parentnode import ParentNode
 
 
 class TestParentNode(unittest.TestCase):
     def test_parent_no_tag(self):
         node = ParentNode(tag="", children=[])
         node.tag = None
+        with self.assertRaises(ValueError):
+            _ = node.to_html()
+
+    def test_parent_no_children(self):
+        node = ParentNode(tag="", children=[])
+        node.children = None
         with self.assertRaises(ValueError):
             _ = node.to_html()
 

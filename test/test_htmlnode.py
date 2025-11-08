@@ -4,6 +4,16 @@ from src.htmlnode import HTMLNode
 
 
 class TestHtmlNode(unittest.TestCase):
+    def test_print(self):
+        node = HTMLNode("tag", "value", [], {"prop": "p"})
+        text = node.__repr__()
+        self.assertEqual(r"HTMLNode(tag, value, [], {'prop': 'p'})", text)
+
+    def test_to_html_not_impl(self):
+        node = HTMLNode()
+        with self.assertRaises(NotImplementedError):
+            node.to_html()
+
     def test_props_to_html_one_prop(self):
         node = HTMLNode(props={"key1": "value1"})
         expected = ' key1="value1"'
@@ -51,7 +61,3 @@ class TestHtmlNode(unittest.TestCase):
         node1 = HTMLNode("tag", "value", [HTMLNode("a")], {"p": "q"})
         node2 = HTMLNode("tag", "value", [HTMLNode("a")], {"p": "r"})
         self.assertNotEqual(node1, node2)
-
-
-if __name__ == "__main__":
-    _ = unittest.main()

@@ -16,6 +16,11 @@ from src.textnode import (
 
 
 class TestTextNode(unittest.TestCase):
+    def test_print(self):
+        node = TextNode("This is a text node", TextType.BOLD, "linktext")
+        text = node.__repr__()
+        self.assertEqual("TextNode(This is a text node, bold, linktext", text)
+
     def test_eq_wo_url(self):
         node1 = TextNode("This is a text node", TextType.BOLD)
         node2 = TextNode("This is a text node", TextType.BOLD)
@@ -25,6 +30,12 @@ class TestTextNode(unittest.TestCase):
         node1 = TextNode("This is a text node", TextType.BOLD, "linktext")
         node2 = TextNode("This is a text node", TextType.BOLD, "linktext")
         self.assertEqual(node1, node2)
+
+    def test_eq_w_other_type(self):
+        node1 = TextNode("This is a text node", TextType.BOLD, "linktext")
+        node2 = "linktext"
+        result = node1 == node2
+        self.assertFalse(result)
 
     def test_ne_text(self):
         node1 = TextNode("This is a text node", TextType.BOLD)
@@ -328,7 +339,3 @@ class TestTextNode(unittest.TestCase):
             ],
             nodes,
         )
-
-
-if __name__ == "__main__":
-    _ = unittest.main()

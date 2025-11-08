@@ -68,7 +68,3 @@ class TestLeafNode(unittest.TestCase):
             html_node.props,
             {"alt": "image description", "img": "https://faxxter.com/image.png"},
         )
-
-
-if __name__ == "__main__":
-    _ = unittest.main()
