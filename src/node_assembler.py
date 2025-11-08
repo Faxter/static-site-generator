@@ -17,11 +17,11 @@ from src.textnode import markdown_text_to_textnodes
 
 def markdown_to_html_node(document: str):
     blocks = markdown_to_text_blocks(document)
-    div_node = ParentNode("div", [])
+    children: list[HTMLNode] = []
     for block in blocks:
         node = text_block_to_html_node(block)
-        div_node.children.append(node)
-    return div_node
+        children.append(node)
+    return ParentNode("div", children)
 
 
 def text_block_to_html_node(block: str) -> HTMLNode:
