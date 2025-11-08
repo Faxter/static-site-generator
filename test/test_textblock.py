@@ -40,6 +40,16 @@ block 2
         blocks = markdown_to_text_blocks(md)
         self.assertEqual(["block 1", "block 2"], blocks)
 
+    def test_markdown_to_blocks_empty_block_at_end(self):
+        md = """
+block 1
+
+block 2
+
+"""
+        blocks = markdown_to_text_blocks(md)
+        self.assertEqual(["block 1", "block 2"], blocks)
+
     def test_text_block_paragraph(self):
         block = "some text"
         type = block_to_block_type(block)

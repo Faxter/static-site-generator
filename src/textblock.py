@@ -42,7 +42,7 @@ def block_to_line(block: str, type: BlockType):
     lines = block.split("\n")
     match type:
         case BlockType.PARAGRAPH:
-            pass
+            return " ".join(lines)
         case BlockType.QUOTE:
             lines = list(map(lambda s: s[2:], lines))
             return " ".join(lines) if len(lines) > 1 else " ".join(lines)
@@ -51,10 +51,8 @@ def block_to_line(block: str, type: BlockType):
         case BlockType.ORDERED_LIST:
             return list(map(lambda s: s[3:], lines))
         case BlockType.CODE:
-            return block[3:-3]
+            return block[3:-3].strip()
         case BlockType.HEADING:
             heading_matcher = r"^(#{1,6}) (.*)"
             m = search(heading_matcher, block)
             return [m.group(1), m.group(2)]
-
-    return " ".join(lines)

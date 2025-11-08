@@ -1,8 +1,22 @@
 from src.htmlnode import HTMLNode
 from src.leafnode import LeafNode, text_node_to_html_node
 from src.parentnode import ParentNode
-from src.textblock import BlockType, block_to_block_type, block_to_line
+from src.textblock import (
+    BlockType,
+    block_to_block_type,
+    block_to_line,
+    markdown_to_text_blocks,
+)
 from src.textnode import markdown_text_to_textnodes
+
+
+def markdown_to_html_node(document: str):
+    blocks = markdown_to_text_blocks(document)
+    div_node = ParentNode("div", [])
+    for block in blocks:
+        node = text_block_to_html_node(block)
+        div_node.children.append(node)
+    return div_node
 
 
 def text_block_to_html_node(block: str) -> HTMLNode:
