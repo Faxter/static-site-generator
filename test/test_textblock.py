@@ -1,6 +1,11 @@
 import unittest
 
-from src.textblock import BlockType, block_to_block_type, markdown_to_text_blocks
+from src.textblock import (
+    BlockType,
+    block_to_block_type,
+    block_to_line,
+    markdown_to_text_blocks,
+)
 
 
 class TestTextBlock(unittest.TestCase):
@@ -104,3 +109,35 @@ block 2
         block = "1. first\n3. second\n2. third"
         type = block_to_block_type(block)
         self.assertEqual(BlockType.PARAGRAPH, type)
+
+    def test_block_to_line_paragraph_without_markdown(self):
+        line = block_to_line("text without markdown", BlockType.PARAGRAPH)
+        self.assertEqual("text without markdown", line)
+
+    def test_block_to_line_paragraph(self):
+        line = block_to_line("**bold** text in _here_", BlockType.PARAGRAPH)
+        self.assertEqual("**bold** text in _here_", line)
+
+    def test_block_to_line_quote(self):
+        line = block_to_line("> some quote", BlockType.QUOTE)
+        self.assertEqual("some quote", line)
+
+    def test_block_to_line_quote_multiline(self):
+        line = block_to_line("> some quote\n> more", BlockType.QUOTE)
+        self.assertEqual("some quote more", line)
+
+    def test_block_to_line_ulist(self):
+        lines = block_to_line("- one\n- two", BlockType.UNORDERED_LIST)
+        self.assertListEqual(["one", "two"], lines)
+
+    def test_block_to_line_olist(self):
+        lines = block_to_line("1. one\n2. two", BlockType.ORDERED_LIST)
+        self.assertListEqual(["one", "two"], lines)
+
+    def test_block_to_line_code(self):
+        line = block_to_line("```code stuff\nin here```", BlockType.CODE)
+        self.assertEqual("code stuff\nin here", line)
+
+    def test_block_to_line_heading(self):
+        line = block_to_line("# heading 1", BlockType.HEADING)
+        self.assertEqual("heading 1", line[1])
