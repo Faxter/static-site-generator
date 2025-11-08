@@ -55,4 +55,8 @@ def block_to_line(block: str, type: BlockType):
         case BlockType.HEADING:
             heading_matcher = r"^(#{1,6}) (.*)"
             m = search(heading_matcher, block)
-            return [m.group(1), m.group(2)]
+            if not m:
+                raise ValueError(
+                    "could not regex match a group of #s to a heading text"
+                )
+            return [str(m.group(1)), str(m.group(2))]
