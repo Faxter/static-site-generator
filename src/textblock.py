@@ -38,25 +38,36 @@ def block_to_block_type(block: str) -> BlockType:
     return BlockType.PARAGRAPH
 
 
-def block_to_line(block: str, type: BlockType):
+def paragraph_block_to_line(block: str):
     lines = block.split("\n")
-    match type:
-        case BlockType.PARAGRAPH:
-            return " ".join(lines)
-        case BlockType.QUOTE:
-            lines = list(map(lambda s: s[2:], lines))
-            return " ".join(lines) if len(lines) > 1 else " ".join(lines)
-        case BlockType.UNORDERED_LIST:
-            return list(map(lambda s: s[2:], lines))
-        case BlockType.ORDERED_LIST:
-            return list(map(lambda s: s[3:], lines))
-        case BlockType.CODE:
-            return block[3:-3].strip()
-        case BlockType.HEADING:
-            heading_matcher = r"^(#{1,6}) (.*)"
-            m = search(heading_matcher, block)
-            if not m:
-                raise ValueError(
-                    "could not regex match a group of #s to a heading text"
-                )
-            return [str(m.group(1)), str(m.group(2))]
+    return " ".join(lines)
+
+
+def quote_block_to_line(block: str):
+    lines = block.split("\n")
+    lines = list(map(lambda s: s[2:], lines))
+    return " ".join(lines) if len(lines) > 1 else " ".join(lines)
+
+
+def unordered_list_block_to_lines(block: str):
+    lines = block.split("\n")
+    return list(map(lambda s: s[2:], lines))
+
+
+def ordered_list_block_to_lines(block: str):
+    lines = block.split("\n")
+    return list(map(lambda s: s[3:], lines))
+
+
+def code_block_to_lines(block: str):
+    return block[3:-3].strip()
+
+
+def heading_block_to_line(block: str):
+    heading_matcher = r"^(#{1,6}) (.*)"
+    m = search(heading_matcher, block)
+    if not m:
+        raise ValueError("could not regex match a group of #s to a heading text")
+    no_of_pounds = len(str(m.group(1)))
+    heading_text = str(m.group(2))
+    return no_of_pounds, heading_text
