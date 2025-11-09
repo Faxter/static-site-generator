@@ -68,3 +68,7 @@ class TestLeafNode(unittest.TestCase):
             html_node.props,
             {"alt": "image description", "src": "https://faxxter.com/image.png"},
         )
+        self.assertEqual(
+            '<img alt="image description" src="https://faxxter.com/image.png" />',
+            html_node.to_html(),
+        )
