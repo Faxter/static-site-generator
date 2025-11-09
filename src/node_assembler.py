@@ -39,23 +39,22 @@ def text_block_to_html_node(block: str) -> HTMLNode:
             return LeafNode(line, "blockquote")
         case BlockType.UNORDERED_LIST:
             lines = unordered_list_block_to_lines(block)
-            children = []
-            for line in lines:
-                sub_nodes = markdown_text_to_textnodes(line)
-                sub_html_nodes = map(text_node_to_html_node, sub_nodes)
-                children.append(ParentNode("li", list(sub_html_nodes)))
-            return ParentNode("ul", children)
+            return ParentNode("ul", list_items_to_children_nodes(lines))
         case BlockType.ORDERED_LIST:
             lines = ordered_list_block_to_lines(block)
-            children = []
-            for line in lines:
-                sub_nodes = markdown_text_to_textnodes(line)
-                sub_html_nodes = map(text_node_to_html_node, sub_nodes)
-                children.append(ParentNode("li", list(sub_html_nodes)))
-            return ParentNode("ol", children)
+            return ParentNode("ol", list_items_to_children_nodes(lines))
         case BlockType.CODE:
             line = code_block_to_lines(block)
             return ParentNode("pre", [LeafNode(line, "code")])
         case BlockType.HEADING:
             heading_rank, heading_text = heading_block_to_line(block)
             return LeafNode(heading_text, f"h{heading_rank}")
+
+
+def list_items_to_children_nodes(lines: list[str]):
+    children: list[HTMLNode] = []
+    for line in lines:
+        sub_nodes = markdown_text_to_textnodes(line)
+        sub_html_nodes = map(text_node_to_html_node, sub_nodes)
+        children.append(ParentNode("li", list(sub_html_nodes)))
+    return children
