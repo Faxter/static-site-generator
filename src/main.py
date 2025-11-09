@@ -2,6 +2,15 @@ import os
 import shutil
 from pathlib import Path
 
+from src.page_assembler import generate_page
+
+
+def main():
+    copy_contents(Path("static"), Path("public"))
+    html = generate_page(Path("content/index.md"), Path("template.html"))
+    with open("public/index.html", "w") as f:
+        f.write(html)
+
 
 def copy_contents(src: Path, dst: Path):
     if not os.path.exists(src):
@@ -17,10 +26,6 @@ def copy_contents(src: Path, dst: Path):
             shutil.copy(source, target)
         else:
             copy_contents(source, target)
-
-
-def main():
-    copy_contents(Path("static"), Path("public"))
 
 
 if __name__ == "__main__":
