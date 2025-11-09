@@ -66,5 +66,5 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(html_node.value, "")
         self.assertEqual(
             html_node.props,
-            {"alt": "image description", "img": "https://faxxter.com/image.png"},
+            {"alt": "image description", "src": "https://faxxter.com/image.png"},
         )
