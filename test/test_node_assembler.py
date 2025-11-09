@@ -50,7 +50,7 @@ the **same** even with inline stuff
     def test_block_to_node_quote_multiline(self):
         node = text_block_to_html_node("> some quote\n> more text")
         self.assertEqual(
-            "<blockquote>some quote more text</blockquote>", node.to_html()
+            "<blockquote>some quote<br />more text</blockquote>", node.to_html()
         )
 
     def test_block_to_node_ulist(self):

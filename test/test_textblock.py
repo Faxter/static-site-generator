@@ -135,11 +135,11 @@ block 2
 
     def test_block_to_line_quote(self):
         line = quote_block_to_line("> some quote")
-        self.assertEqual("some quote", line)
+        self.assertEqual(["some quote"], line)
 
     def test_block_to_line_quote_multiline(self):
-        line = quote_block_to_line("> some quote\n> more")
-        self.assertEqual("some quote more", line)
+        lines = quote_block_to_line("> some quote\n> more")
+        self.assertListEqual(["some quote", "more"], lines)
 
     def test_block_to_line_ulist(self):
         lines = unordered_list_block_to_lines("- one\n- two")

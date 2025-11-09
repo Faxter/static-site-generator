@@ -45,8 +45,7 @@ def paragraph_block_to_line(block: str):
 
 def quote_block_to_line(block: str):
     lines = block.split("\n")
-    lines = list(map(lambda s: s[2:], lines))
-    return " ".join(lines) if len(lines) > 1 else " ".join(lines)
+    return list(map(lambda s: s[2:], lines))
 
 
 def unordered_list_block_to_lines(block: str):

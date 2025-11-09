@@ -34,7 +34,8 @@ def text_block_to_html_node(block: str) -> HTMLNode:
                 children.append(text_node_to_html_node(node))
             return ParentNode("p", children)
         case BlockType.QUOTE:
-            line = quote_block_to_line(block)
+            lines = quote_block_to_line(block)
+            line = "<br />".join(lines)
             return LeafNode(line, "blockquote")
         case BlockType.UNORDERED_LIST:
             lines = unordered_list_block_to_lines(block)
