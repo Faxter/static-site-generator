@@ -41,15 +41,17 @@ def text_block_to_html_node(block: str) -> HTMLNode:
             lines = unordered_list_block_to_lines(block)
             children = []
             for line in lines:
-                md = text_block_to_html_node(line).to_html()
-                children.append(LeafNode(md, "li"))
+                sub_nodes = markdown_text_to_textnodes(line)
+                sub_html_nodes = map(text_node_to_html_node, sub_nodes)
+                children.append(ParentNode("li", list(sub_html_nodes)))
             return ParentNode("ul", children)
         case BlockType.ORDERED_LIST:
             lines = ordered_list_block_to_lines(block)
             children = []
             for line in lines:
-                md = text_block_to_html_node(line).to_html()
-                children.append(LeafNode(md, "li"))
+                sub_nodes = markdown_text_to_textnodes(line)
+                sub_html_nodes = map(text_node_to_html_node, sub_nodes)
+                children.append(ParentNode("li", list(sub_html_nodes)))
             return ParentNode("ol", children)
         case BlockType.CODE:
             line = code_block_to_lines(block)

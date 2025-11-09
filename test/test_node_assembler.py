@@ -55,27 +55,23 @@ the **same** even with inline stuff
 
     def test_block_to_node_ulist(self):
         node = text_block_to_html_node("- item 1\n- item 2")
-        self.assertEqual(
-            "<ul><li><p>item 1</p></li><li><p>item 2</p></li></ul>", node.to_html()
-        )
+        self.assertEqual("<ul><li>item 1</li><li>item 2</li></ul>", node.to_html())
 
     def test_block_to_node_ulist_with_markdown(self):
         node = text_block_to_html_node("- item **1**\n- item _2_")
         self.assertEqual(
-            "<ul><li><p>item <b>1</b></p></li><li><p>item <i>2</i></p></li></ul>",
+            "<ul><li>item <b>1</b></li><li>item <i>2</i></li></ul>",
             node.to_html(),
         )
 
     def test_block_to_node_olist(self):
         node = text_block_to_html_node("1. item 1\n2. item 2")
-        self.assertEqual(
-            "<ol><li><p>item 1</p></li><li><p>item 2</p></li></ol>", node.to_html()
-        )
+        self.assertEqual("<ol><li>item 1</li><li>item 2</li></ol>", node.to_html())
 
     def test_block_to_node_olist_with_markdown(self):
         node = text_block_to_html_node("1. item **1**\n2. item _2_")
         self.assertEqual(
-            "<ol><li><p>item <b>1</b></p></li><li><p>item <i>2</i></p></li></ol>",
+            "<ol><li>item <b>1</b></li><li>item <i>2</i></li></ol>",
             node.to_html(),
         )
 
