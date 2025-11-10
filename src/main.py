@@ -4,15 +4,20 @@ from pathlib import Path
 
 from src.page_assembler import generate_page
 
+PATH_CONTENT = Path("content")
+PATH_PUBLIC = Path("public")
+PATH_STATIC = Path("static")
+PATH_TEMPLATE = Path("template.html")
+
 
 def main():
-    copy_contents(Path("static"), Path("public"))
-    markdown = read_markdown_content(Path("content"))
-    template = read_template_content(Path("template.html"))
+    copy_contents(PATH_STATIC, PATH_PUBLIC)
+    markdown = read_markdown_content(PATH_CONTENT)
+    template = read_template_content(PATH_TEMPLATE)
     for path, content in markdown.items():
-        print(f"Generating page from {path} using template.html")
+        print(f"Generating page from {path} using {PATH_TEMPLATE}")
         html = generate_page(content, template)
-        write_html(html, path, Path("public"))
+        write_html(html, path, PATH_PUBLIC)
 
 
 def copy_contents(src: Path, dst: Path):
