@@ -1,22 +1,21 @@
 import unittest
-from pathlib import Path
 
-from src.page_assembler import extract_title_from_markdown, generate_page
+from src.page_assembler import (
+    extract_title_from_markdown,
+    generate_page,
+)
 
 
 class TestPageAssembler(unittest.TestCase):
-    def test_generate_page(self):
+    def test_generate_single_page(self):
         html = generate_page(
-            Path("test/content_example.md"),
-            Path("test/template_example.html"),
+            "# title 1\n\nsome very interesting text",
+            "<html><title>{{ Title }}</title><body>{{ Content }}</body></html>",
         )
-        with open("test/template_example.html", "r") as f:
-            template_content = f.read()
-        result = template_content.replace("{{ Title }}", "title 1").replace(
-            "{{ Content }}",
-            "<div><h1>title 1</h1><p>some very interesting text</p></div>",
+        self.assertEqual(
+            "<html><title>title 1</title><body><div><h1>title 1</h1><p>some very interesting text</p></div></body></html>",
+            html,
         )
-        self.assertEqual(result, html)
 
     def test_extract_title(self):
         title = extract_title_from_markdown("# title 1\n\nfirst paragraph!")

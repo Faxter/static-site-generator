@@ -1,20 +1,12 @@
-from pathlib import Path
 from re import match
 
 from src.node_assembler import markdown_to_html_node
 
 
-def generate_page(source: Path, template: Path):
-    print(f"Generating page from {source} using {template}")
-    markdown = ""
-    template_content = ""
-    with open(source, "r") as f:
-        markdown = f.read()
-    with open(template, "r") as f:
-        template_content = f.read()
+def generate_page(markdown: str, template: str):
     html = markdown_to_html_node(markdown).to_html()
     title = extract_title_from_markdown(markdown)
-    result = template_content.replace(r"{{ Title }}", title)
+    result = template.replace(r"{{ Title }}", title)
     result = result.replace(r"{{ Content }}", html)
     return result
 
