@@ -48,7 +48,9 @@ def text_block_to_html_node(block: str) -> HTMLNode:
             return ParentNode("pre", [LeafNode(line, "code")])
         case BlockType.HEADING:
             heading_rank, heading_text = heading_block_to_line(block)
-            return LeafNode(heading_text, f"h{heading_rank}")
+            text_nodes = markdown_text_to_textnodes(heading_text)
+            html_nodes = map(text_node_to_html_node, text_nodes)
+            return ParentNode(f"h{heading_rank}", list(html_nodes))
 
 
 def list_items_to_children_nodes(lines: list[str]):

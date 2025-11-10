@@ -91,3 +91,7 @@ the **same** even with inline stuff
     def test_block_to_node_heading6(self):
         node = text_block_to_html_node("###### heading 6")
         self.assertEqual("<h6>heading 6</h6>", node.to_html())
+
+    def test_block_to_node_heading_with_markdown(self):
+        node = text_block_to_html_node("# **FAT** heading")
+        self.assertEqual("<h1><b>FAT</b> heading</h1>", node.to_html())
