@@ -3,6 +3,7 @@ import unittest
 from src.page_assembler import (
     extract_title_from_markdown,
     generate_page,
+    insert_base_path,
 )
 
 
@@ -14,6 +15,20 @@ class TestPageAssembler(unittest.TestCase):
         )
         self.assertEqual(
             "<html><title>title 1</title><body><div><h1>title 1</h1><p>some very interesting text</p></div></body></html>",
+            html,
+        )
+
+    def test_insert_base_path_nothing_to_replace(self):
+        html = insert_base_path("base", "plain")
+        self.assertEqual("plain", html)
+
+    def test_insert_base_path_replace_href_and_src(self):
+        html = insert_base_path(
+            "/base/",
+            '<a href="/blog/some.html">linktext</a><img src="/images/i.png" />',
+        )
+        self.assertEqual(
+            '<a href="/base/blog/some.html">linktext</a><img src="/base/images/i.png" />',
             html,
         )
 

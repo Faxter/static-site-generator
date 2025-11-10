@@ -1,22 +1,26 @@
 import os
 import shutil
+import sys
 from pathlib import Path
 
-from src.page_assembler import generate_page
+from src.page_assembler import generate_page, insert_base_path
 
 PATH_CONTENT = Path("content")
-PATH_PUBLIC = Path("public")
+PATH_PUBLIC = Path("docs")
 PATH_STATIC = Path("static")
 PATH_TEMPLATE = Path("template.html")
 
 
 def main():
+    basepath = "/" if not sys.argv[1] else sys.argv[1]
+
     copy_contents(PATH_STATIC, PATH_PUBLIC)
     markdown = read_markdown_content(PATH_CONTENT)
     template = read_template_content(PATH_TEMPLATE)
     for path, content in markdown.items():
         print(f"Generating page from {path} using {PATH_TEMPLATE}")
         html = generate_page(content, template)
+        html = insert_base_path(basepath, html)
         write_html(html, path, PATH_PUBLIC)
 
 
